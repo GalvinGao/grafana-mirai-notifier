@@ -1,0 +1,13 @@
+server:
+  address: ":8085"
+
+mirai_http:
+  address: "http://localhost:2000"
+  auth_key: "authKey"
+  qq_number: 10000
+
+log:
+  name: "log.log"
+
+qq:
+  group: 10001
