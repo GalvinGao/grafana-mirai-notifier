@@ -6,7 +6,7 @@
 
 This notifier allows the one to send notify message to a QQ group when a Grafana alert is triggered.
 
-This project is based on [mamoe/mirai](https://github.com/mamoe/mirai), [mamoe/mirai-console](https://github.com/mamoe/mirai-console), [LXY1226/MiraiOK](https://github.com/LXY1226/MiraiOK) and [project-mirai/mirai-api-http](https://github.com/project-mirai/mirai-api-http) 
+This project is based on [mamoe/mirai](https://github.com/mamoe/mirai), [mamoe/mirai-console](https://github.com/mamoe/mirai-console), [LXY1226/MiraiOK](https://github.com/LXY1226/MiraiOK), [project-mirai/mirai-api-http](https://github.com/project-mirai/mirai-api-http) and [Logiase/gomirai](https://github.com/Logiase/gomirai) 
 
 ## Get Started
 1. [Setup mirai-console](https://github.com/LXY1226/MiraiOK)
