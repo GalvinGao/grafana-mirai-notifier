@@ -2,19 +2,14 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/Logiase/gomirai/message"
 	"github.com/labstack/echo/v4"
+	"io/ioutil"
 	"net/http"
+	"path"
 	"text/template"
 )
-
-const MessageTemplate = `> New Alert State from Grafana
-> State: {{.State}}
-> {{.Message}}
-
-Details:
-  - Source: {{.RuleName}} (id:{{.RuleID}}, panel:{{.PanelID}})
-  - For more, visit {{.RuleURL}}`
 
 type Tag map[string]string
 
@@ -37,6 +32,11 @@ type GrafanaWebhookRequest struct {
 	Title    string `json:"title" validate:"required"`
 }
 
+func readTemplateFile(name string) string {
+	t, _ := ioutil.ReadFile(path.Join("templates", fmt.Sprintf("%s.tmpl", name)))
+	return string(t)
+}
+
 func webhookHandler(c echo.Context) error {
 	r := new(GrafanaWebhookRequest)
 	if err := c.Bind(r); err != nil {
@@ -46,18 +46,30 @@ func webhookHandler(c echo.Context) error {
 		return responseError(http.StatusBadRequest, "request validation failed", err)
 	}
 
+	var messageTemplate string
+
+	switch r.State {
+	case GrafanaWebhookStateOK:
+		messageTemplate = readTemplateFile("state-ok")
+	case GrafanaWebhookStateAlerting:
+		messageTemplate = readTemplateFile("state-alerting")
+	default:
+		return c.NoContent(http.StatusOK)
+	}
+
 	msg := bytes.NewBufferString("")
-	err := template.Must(template.New("message").Parse(MessageTemplate)).Execute(msg, r)
+	err := template.Must(template.New("message").Parse(messageTemplate)).Execute(msg, r)
 	if err != nil {
 		return responseError(http.StatusInternalServerError, "failed to format message", err)
 	}
 
-	if _, err := Bot.SendGroupMessage(Conf.QQ.Group, 0, message.PlainMessage(msg.String())); err != nil {
+	textMsgId, err := Bot.SendGroupMessage(Conf.QQ.Group, 0, message.PlainMessage(msg.String()))
+	if err != nil {
 		return responseError(http.StatusInternalServerError, "failed to send message", err)
 	}
-	if _, err := Bot.SendGroupMessage(Conf.QQ.Group, 0, message.ImageMessage("url", r.ImageURL)); err != nil {
+	if _, err := Bot.SendGroupMessage(Conf.QQ.Group, textMsgId, message.ImageMessage("url", r.ImageURL)); err != nil {
 		return responseError(http.StatusInternalServerError, "failed to send message", err)
 	}
 
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusAccepted)
 }
