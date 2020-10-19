@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/Logiase/gomirai/bot"
 	"github.com/jinzhu/configor"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
 	"io"

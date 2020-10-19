@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"github.com/Logiase/gomirai/message"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"text/template"
 )
