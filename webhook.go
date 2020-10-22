@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/Logiase/gomirai/message"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/labstack/echo/v4"
 	"io/ioutil"
 	"net/http"
@@ -20,8 +21,8 @@ type GrafanaWebhookRequest struct {
 	//	Metric string `json:"metric"`
 	//	Tags   Tag `json:"tags"`
 	//} `json:"evalMatches"`
-	ImageURL string `json:"imageUrl"`
-	Message  string `json:"message" validate:"required"`
+	ImageURL string `json:"imageUrl" validate:"required"`
+	//Message  string `json:"message" validate:"required"`
 	OrgID    int    `json:"orgId"`
 	PanelID  int    `json:"panelId" validate:"required"`
 	RuleID   int    `json:"ruleId" validate:"required"`
@@ -40,9 +41,11 @@ func readTemplateFile(name string) string {
 func webhookHandler(c echo.Context) error {
 	r := new(GrafanaWebhookRequest)
 	if err := c.Bind(r); err != nil {
+		Log.Println(spew.Sdump(c.Request().Body))
 		return responseError(http.StatusBadRequest, "bind request failed", err)
 	}
 	if err := c.Validate(r); err != nil {
+		Log.Println(spew.Sdump(c.Request().Body))
 		return responseError(http.StatusBadRequest, "request validation failed", err)
 	}
 
