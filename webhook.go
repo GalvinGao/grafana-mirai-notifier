@@ -25,7 +25,7 @@ type GrafanaWebhookRequest struct {
 	//OrgID    int    `json:"orgId"`
 	PanelID  int    `json:"panelId"`
 	RuleID   int    `json:"ruleId"`
-	//RuleName string `json:"ruleName"`
+	RuleName string `json:"ruleName"`
 	RuleURL  string `json:"ruleUrl" validate:"required"`
 	State    string `json:"state"`
 	//Tags     Tag `json:"tags"`
@@ -38,9 +38,6 @@ func readTemplateFile(name string) string {
 }
 
 func webhookHandler(c echo.Context) error {
-	b, _ := ioutil.ReadAll(c.Request().Body)
-	Log.Println("received webhook request: ", string(b))
-
 	r := new(GrafanaWebhookRequest)
 	if err := c.Bind(r); err != nil {
 		return responseError(http.StatusBadRequest, "bind request failed", err)
@@ -65,6 +62,8 @@ func webhookHandler(c echo.Context) error {
 	if err != nil {
 		return responseError(http.StatusInternalServerError, "failed to format message", err)
 	}
+
+	Log.Println("formatted plain message as", msg.String())
 
 	messages := []message.Message{
 		message.PlainMessage(msg.String()),

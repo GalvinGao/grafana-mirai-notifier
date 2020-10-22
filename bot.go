@@ -29,7 +29,7 @@ func botSendGroupMessage(group, quote uint, msg ...message.Message) error {
 		func() error {
 			_, err := Bot.SendGroupMessage(group, quote, msg...)
 			if err != nil {
-				Log.Println("failed to send message. retrying...")
+				Log.Println("failed to send message due to", err, ". retrying...")
 			}
 			return err
 		},
