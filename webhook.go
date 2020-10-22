@@ -63,12 +63,10 @@ func webhookHandler(c echo.Context) error {
 		return responseError(http.StatusInternalServerError, "failed to format message", err)
 	}
 
-	textMsgId, err := Bot.SendGroupMessage(Conf.QQ.Group, 0, message.PlainMessage(msg.String()))
+
+	err = botSendGroupMessage(Conf.QQ.Group, 0, message.PlainMessage(msg.String()), message.ImageMessage("url", r.ImageURL))
 	if err != nil {
-		return responseError(http.StatusInternalServerError, "failed to send message", err)
-	}
-	if _, err := Bot.SendGroupMessage(Conf.QQ.Group, textMsgId, message.ImageMessage("url", r.ImageURL)); err != nil {
-		return responseError(http.StatusInternalServerError, "failed to send message", err)
+		return responseError(http.StatusInternalServerError, "failed to send message after consecutive retries", err)
 	}
 
 	return c.NoContent(http.StatusAccepted)

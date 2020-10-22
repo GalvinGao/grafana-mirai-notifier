@@ -6,7 +6,6 @@ import (
 	"github.com/Logiase/gomirai/bot"
 	"github.com/jinzhu/configor"
 	"github.com/labstack/echo/v4"
-	"github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
 	"io"
 	"log"
@@ -40,18 +39,7 @@ func main() {
 		Log = log.New(io.MultiWriter(logFile, os.Stderr), "[main] ", log.LstdFlags|log.Lshortfile)
 	}
 
-	{
-		c := bot.NewClient("default", Conf.MiraiHTTP.Address, Conf.MiraiHTTP.AuthKey)
-		c.Logger.Level = logrus.TraceLevel
-		key, err := c.Auth()
-		if err != nil {
-			c.Logger.Fatal(err)
-		}
-		Bot, err = c.Verify(Conf.MiraiHTTP.QQNumber, key)
-		if err != nil {
-			c.Logger.Fatal(err)
-		}
-	}
+	dialBot()
 
 	e := echo.New()
 	e.Validator = &EchoRequestValidator{validator: validator.New()}
