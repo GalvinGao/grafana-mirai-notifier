@@ -15,11 +15,11 @@ type Tag map[string]string
 
 type GrafanaWebhookRequest struct {
 	DashboardID int `json:"dashboardId"`
-	EvalMatches []struct {
-		Value  int    `json:"value"`
-		Metric string `json:"metric"`
-		Tags   Tag `json:"tags"`
-	} `json:"evalMatches"`
+	//EvalMatches []struct {
+	//	Value  int    `json:"value"`
+	//	Metric string `json:"metric"`
+	//	Tags   Tag `json:"tags"`
+	//} `json:"evalMatches"`
 	ImageURL string `json:"imageUrl"`
 	Message  string `json:"message" validate:"required"`
 	OrgID    int    `json:"orgId"`
